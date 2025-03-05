@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Space Aquarium Idle - Version 3.58</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Intro Screen -->
+    <div id="introScreen">
+        <h1>Space Aquarium Idle</h1>
+        <div id="introStoryContainer">
+            <p id="introStory">
+                You’re an astronaut on a mission to explore the cosmos, but there’s a problem—your trusty fish tank and its colorful crew refuse to be left behind! NASA says it’s a no-go, but you sneak them aboard anyway. After all, who can resist those little fins in zero gravity? Let’s embark on this spacey aquarium adventure!
+            </p>
+        </div>
+        <button id="startGameButton" class="menuButton">Start Game</button>
+    </div>
+
+    <!-- Main Game Container -->
+    <div id="gameContainer" style="display: none;">
+        <div id="menuContainer">
+            <div id="prestigeCounter">Prestige Points: 0</div>
+            <div id="shellCounter">Shells: 0</div>
+            <div id="cosmicCoinCounter">Cosmic Coins: 0</div>
+            <!-- Space Operations -->
+            <div class="menuSection">
+                <button class="sectionHeader" data-target="spaceOperationsPopup">Space Operations</button>
+            </div>
+            <!-- Tank Management -->
+            <div class="menuSection">
+                <button class="sectionHeader" data-target="tankManagementPopup">Tank Management</button>
+            </div>
+            <!-- Sell Fish -->
+            <div class="menuSection">
+                <button class="sectionHeader" data-target="sellFishPopup">Sell Fish</button>
+            </div>
+            <!-- Skills -->
+            <div class="menuSection">
+                <button class="sectionHeader" data-target="skillsPopup">Skills</button>
+            </div>
+            <!-- Tank Selection -->
+            <div class="menuSection">
+                <button class="sectionHeader" data-target="tankSelectionPopup">Tank Selection</button>
+            </div>
+            <!-- Settings/Info -->
+            <div class="menuSection">
+                <button class="sectionHeader" data-target="settingsInfoPopup">Settings/Info</button>
+            </div>
+            <!-- Dev Menu -->
+            <div class="menuSection" id="devSection">
+                <h3>Dev Menu</h3>
+                <button id="addShellsButton" class="menuButton">Add 100 Shells</button>
+                <button id="addPrestigeButton" class="menuButton">Add 100 Prestige</button>
+                <button id="speed2xButton" class="menuButton devButton">Speed 2x</button>
+                <button id="speed5xButton" class="menuButton devButton">Speed 5x</button>
+                <button id="alwaysFedButton" class="menuButton devButton">Always Fed</button>
+                <button id="spawnSpecialFishButton" class="menuButton devButton">Spawn Special Fish</button>
+            </div>
+        </div>
+        <div id="tankContainer">
+            <div id="hungerContainer">
+                <div id="hungerBar"></div>
+                <div id="hungerText">Hunger: 50%</div>
+            </div>
+            <canvas id="aquariumCanvas" width="800" height="450"></canvas>
+            <!-- In-Game Tips (Moved Below Aquarium) -->
+            <div id="tipContainer">
+                <p id="gameTip">Tip: Loading...</p>
+            </div>
+            <!-- Pop-Up Windows -->
+            <!-- Space Operations Popup -->
+            <div id="spaceOperationsPopup" class="popupOverlay">
+                <h2>Space Operations</h2>
+                <button id="cleanButton" class="menuButton">Clean Tank (Earn 1 Shell)</button>
+                <button id="feedButton" class="menuButton">Feed Fish (1 Shell)</button>
+                <button class="closePopupButton">Close</button>
+            </div>
+            <!-- Tank Management Popup -->
+            <div id="tankManagementPopup" class="popupOverlay">
+                <h2>Tank Management</h2>
+                <button id="buyRedButton" class="menuButton">Buy Red (10 Shells) <svg width="12" height="12" style="vertical-align: middle; margin-left: 5px;"><rect x="0" y="4" width="6" height="4" fill="#ff0000" /><polygon points="6,4 9,2 9,6 6,4" fill="#ff0000" /></svg></button>
+                <button id="buyBlueButton" class="menuButton">Buy Blue (20 Shells) <svg width="12" height="12" style="vertical-align: middle; margin-left: 5px;"><rect x="0" y="4" width="6" height="4" fill="#0000ff" /><polygon points="6,4 9,2 9,6 6,4" fill="#0000ff" /></svg></button>
+                <button id="buyYellowButton" class="menuButton">Buy Yellow (30 Shells) <svg width="12" height="12" style="vertical-align: middle; margin-left: 5px;"><rect x="0" y="4" width="6" height="4" fill="#ffff00" /><polygon points="6,4 9,2 9,6 6,4" fill="#ffff00" /></svg></button>
+                <button class="closePopupButton">Close</button>
+            </div>
+            <!-- Sell Fish Popup -->
+            <div id="sellFishPopup" class="popupOverlay">
+                <h2>Sell Fish</h2>
+                <select id="sellColorSelect" class="menuButton" style="margin-bottom: 2px;"></select>
+                <div id="sellNumberButtons" style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                    <button id="sell1Button" class="sellNumberButton">1</button>
+                    <button id="sell3Button" class="sellNumberButton">3</button>
+                    <button id="sell5Button" class="sellNumberButton">5</button>
+                    <button id="sellAllButton" class="sellNumberButton">All</button>
+                </div>
+                <button id="sellFishButton" class="menuButton">Sell Fish</button>
+                <button class="closePopupButton">Close</button>
+            </div>
+            <!-- Skills Popup -->
+            <div id="skillsPopup" class="popupOverlay">
+                <h2>Skills</h2>
+                <!-- Shells + Prestige Skills Section -->
+                <div id="shellsPrestigeSkills" class="skill-section">
+                    <h3>Shells & Prestige Skills</h3>
+                    <div id="specialFishChanceSkill">
+                        <p>Special Fish Chance: <span id="specialFishChanceLevel">0</span>/6 (Chance: <span id="specialFishChancePercent">0%</span>)</p>
+                        <button id="upgradeSpecialFishChanceButton" class="menuButton">Upgrade (<span id="specialFishChanceCost">500 Shells + 5 Prestige</span>)</button>
+                    </div>
+                    <div id="autoFeederSkill">
+                        <p>Auto Feeder: <span id="autoFeederLevel">0</span>/25 (Effect: <span id="autoFeederPercent">0%</span>)</p>
+                        <button id="upgradeAutoFeederButton" class="menuButton">Upgrade (<span id="autoFeederCost">100 Shells + 1 Prestige</span>)</button>
+                    </div>
+                    <div id="higherMatingChanceSkill">
+                        <p>Higher Mating Chance: <span id="higherMatingChanceLevel">0</span>/9 (Bonus: <span id="higherMatingChancePercent">0%</span>)</p>
+                        <button id="upgradeHigherMatingChanceButton" class="menuButton">Upgrade (<span id="higherMatingChanceCost">1000 Shells + 10 Prestige</span>)</button>
+                    </div>
+                    <div id="higherSFChanceSkill">
+                        <p>Higher SF Chance: <span id="higherSFChanceLevel">0</span>/5 (Bonus: <span id="higherSFChancePercent">0%</span>)</p>
+                        <button id="upgradeHigherSFChanceButton" class="menuButton">Upgrade (<span id="higherSFChanceCost">2000 Shells + 20 Prestige</span>)</button>
+                    </div>
+                </div>
+                <!-- Cosmic Coin Skills Section -->
+                <div id="cosmicCoinSkills" class="skill-section">
+                    <h3>Cosmic Coin Skills</h3>
+                    <div id="shellAmplifierSkill">
+                        <p>Shell Amplifier: <span id="shellAmplifierLevel">0</span>/5 (Bonus: <span id="shellAmplifierPercent">0%</span>)</p>
+                        <button id="upgradeShellAmplifierButton" class="menuButton">Upgrade (<span id="shellAmplifierCost">100 Cosmic Coins</span>)</button>
+                    </div>
+                    <div id="cosmicGrowthBoosterSkill">
+                        <p>Cosmic Growth Booster: <span id="cosmicGrowthBoosterLevel">0</span>/5 (Bonus: <span id="cosmicGrowthBoosterPercent">0%</span>)</p>
+                        <button id="upgradeCosmicGrowthBoosterButton" class="menuButton">Upgrade (<span id="cosmicGrowthBoosterCost">150 Cosmic Coins</span>)</button>
+                    </div>
+                    <div id="cosmicMatingCharmSkill">
+                        <p>Cosmic Mating Charm: <span id="cosmicMatingCharmLevel">0</span>/5 (Bonus: <span id="cosmicMatingCharmPercent">0%</span>)</p>
+                        <button id="upgradeCosmicMatingCharmButton" class="menuButton">Upgrade (<span id="cosmicMatingCharmCost">200 Cosmic Coins</span>)</button>
+                    </div>
+                </div>
+                <button class="closePopupButton">Close</button>
+            </div>
+            <!-- Tank Selection Popup -->
+            <div id="tankSelectionPopup" class="popupOverlay">
+                <h2>Tank Selection</h2>
+                <div id="tankList"></div>
+                <button class="closePopupButton">Close</button>
+            </div>
+            <!-- Settings/Info Popup -->
+            <div id="settingsInfoPopup" class="popupOverlay">
+                <h2>Settings/Info</h2>
+                <button id="toggleMaturityButton" class="menuButton">Toggle Maturity Display</button>
+                <button id="statisticsButton" class="menuButton">Statistics</button>
+                <button id="toggleSoundButton" class="menuButton">Toggle Sound: On</button>
+                <button id="toggleTipsButton" class="menuButton">Toggle Tips: On</button>
+                <button class="closePopupButton">Close</button>
+            </div>
+            <!-- Statistics Overlay -->
+            <div id="statisticsOverlay" class="popupOverlay">
+                <h2>Statistics</h2>
+                <p id="statsNumTanks">Number of Tanks: 1</p>
+                <p id="statsFishInTank">Fish in Current Tank: 1</p>
+                <p id="statsTotalFish">Total Fish Overall: 1</p>
+                <p id="statsSpecialFish">Special Fish in Tank: 0</p>
+                <p id="statsTankCapacity">Tank Capacity: 1/30</p>
+                <p id="statsMatingChance">Mating Chance: 0%</p>
+                <button id="closeStatisticsButton" class="closePopupButton">Close</button>
+            </div>
+            <!-- Splash Screens -->
+            <div id="firstBabyFishSplash" class="splashScreen">
+                <h2>Congratulations!</h2>
+                <p>Your first baby fish was born!</p>
+            </div>
+            <div id="firstSpecialFishSplash" class="splashScreen">
+                <h2>Congratulations!</h2>
+                <p>You've spawned your first Special Fish!</p>
+            </div>
+        </div>
+    </div>
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+        <source src="music/space-aquarium-idle-BgSound-01.mp3" type="audio/mpeg">
+        <source src="music/space-aquarium-idle-BgSound-02.mp3" type="audio/mpeg">
+    </audio>
+    <script src="fish.js"></script>
+    <script src="tanks.js"></script>
+    <script src="skills.js"></script>
+    <script src="game.js"></script>
+    <script src="devMenu.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="windo
